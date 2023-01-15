@@ -1,50 +1,34 @@
-import React, {useState, useEffect} from "react";
-import PokemonList from "./PokemonList";
-import axios from 'axios'
-import Pagination from "./Pagination";
+import React from "react";
+import Navbar from "./Navbar";
+// import "./App.css";
+// import "antd/dist/antd.css";
+// import { Projects } from "./screens/projects";
+// import { Projectview } from "./screens/projectview";
+// import SignIn from "./components/signin/SignIn";
+// import { ProtectedRoute } from "./helper/protectedRoute";
+// import SignUp from "./components/login/login"
 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import { Provider } from "react-redux";
+// import { store } from "./store";
+import Landing from "./Landing"
+import MovieDetail from "./movieDetail";
+import { Login } from "./auth/Login";
+import { SignUp } from "./auth/signup";
 
 function App() {
-  const [pokemon, setPokemon] = useState([""])
-  const [currentPageUrl, setCurrentPageUrl] = useState(" https://pokeapi.co/api/v2/pokemon")
-  const [nextPage, setNextPage] = useState()
-  const [prevPage, setPrevPage] = useState()
-  const [loading, setLoading] = useState(true)
-  
-  useEffect(() => {
-    setLoading(true)
-    let cancel
-    axios.get(currentPageUrl, {
-      cancelToken: new axios.CancelToken(c => cancel = c)
-    }).then(res => {
-      setLoading(false)
-      setNextPage(res.data.next)
-      setPrevPage(res.data.previous)
-      setPokemon(res.data.results.map(p => p.name))
-    })
-
-    return () => cancel()
-  }, [currentPageUrl])
-
-  if(loading) return "loading..."
-
-  function goNextPage(){
-    setCurrentPageUrl(nextPage)
-  }
-
-  function goPrevPage(){
-    setCurrentPageUrl(prevPage)
-  }
-
-
   return (
-    <>
-      <PokemonList pokemon ={pokemon}/>
-      <Pagination
-        goNextPage={nextPage ? goNextPage : null}
-        goPrevPage={prevPage ? goPrevPage : null}
-      />
-    </>
+    // <Provider store={store}>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/movieDetail" element={<MovieDetail/>}/>
+        <Route path="/login" element={<Login/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
+          <Route path="/" element={<Landing/>}/>
+        </Routes>
+      </Router>
+    // </Provider>
   );
 }
 
